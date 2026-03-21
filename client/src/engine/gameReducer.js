@@ -11,6 +11,8 @@ export const initialState = {
   history: []
 };
 
+import { calculateRoundScore } from './scoringSystem';
+
 export const gameReducer = (state, action) => {
   switch (action.type) {
     case 'START_GAME':
@@ -42,21 +44,12 @@ export const gameReducer = (state, action) => {
       
       const isCorrect = selectedIndex === state.correctIndex;
       
-      // Basic scoring logic for now (from formulas in specifications)
-      // roundScore = (accuracy ? 100 : -40) + confidenceBonus + speedBonus + streakMultiplier
-      const baseScore = isCorrect ? 100 : -40;
-      let confidenceBonus = 0;
-      if (isCorrect) {
-          confidenceBonus = state.confidence * 0.6;
-      } else {
-          // penalty
-          let wrongPenalty = state.confidence * 0.5;
-          confidenceBonus = -wrongPenalty;
-      }
-      const speedBonus = state.timeLeft * 4;
-      const multiplier = 1 + (state.streak * 0.15);
-
-      const computedScore = Math.floor((baseScore + confidenceBonus + speedBonus) * multiplier);
+      const computedScore = calculateRoundScore({
+        isCorrect,
+        confidence: state.confidence,
+        timeLeft: state.timeLeft,
+        streak: state.streak
+      });
 
       return {
         ...state,

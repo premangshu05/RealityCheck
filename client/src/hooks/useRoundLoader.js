@@ -1,22 +1,34 @@
 import { useEffect } from 'react';
-import { mockRounds } from '../data/mockRounds';
 
 export const useRoundLoader = (state, dispatch) => {
   useEffect(() => {
     if (state.status === 'LOADING') {
-      const timer = setTimeout(() => {
-        const mockRound = mockRounds[(state.round - 1) % mockRounds.length]; 
-        dispatch({
-          type: 'ROUND_SUCCESS',
-          payload: {
-            options: mockRound.options,
-            correctIndex: mockRound.correctIndex,
-            // default timer config
-            timer: Math.max(6, 16 - state.level)
-          }
+      fetch(`http://localhost:3001/round?level=${state.level}`)
+        .then(res => res.json())
+        .then(data => {
+          setTimeout(() => {
+             dispatch({
+              type: 'ROUND_SUCCESS',
+              payload: {
+                options: data.options,
+                correctIndex: data.correctIndex,
+                timer: data.timer
+              }
+            });
+          }, 300);
+        })
+        .catch(err => {
+          console.error('Failed to fetch round', err);
+          // Auto fallback if server is down during dev
+          dispatch({
+              type: 'ROUND_SUCCESS',
+              payload: {
+                options: ["Fallback server offline.", "Error connecting."],
+                correctIndex: 1,
+                timer: 10
+              }
+            });
         });
-      }, 300); // 300ms mock delay
-      return () => clearTimeout(timer);
     }
   }, [state.status, state.round, state.level, dispatch]);
 };
