@@ -1,17 +1,44 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Timer } from '../components/Timer';
+import { playSound } from '../engine/soundEngine';
 
 export const GameScreen = ({ state, dispatch }) => {
-  const { status, round, score, timeLeft, content, confidence } = state;
+  const { status, round, score, timeLeft, content, confidence, correctIndex } = state;
+
+  useEffect(() => {
+    if (status === 'LOADING') {
+      playSound('paper'); // or when playing
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 'PLAYING' && timeLeft <= 5 && timeLeft > 0) {
+      playSound('heartbeat');
+    }
+  }, [timeLeft, status]);
+
+  const handleSelect = (idx) => {
+    if (status !== 'PLAYING') return;
+    
+    if (idx === correctIndex) {
+        playSound('correct');
+    } else {
+        playSound('wrong');
+    }
+
+    dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: idx } });
+  };
+
+  const isPressure = timeLeft <= 5 && status === 'PLAYING';
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+    <div className={status === 'PLAYING' ? 'paper-flip-enter' : ''}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '1.2rem' }}>
         <strong>Round {round}</strong>
-        <strong>Score {score}</strong>
+        <strong className={isPressure ? 'pressure-blur' : ''} style={{ fontSize: '1.4rem' }}>Score {score}</strong>
       </div>
       
-      {status === 'LOADING' && <div><p>Loading psychological scenario...</p></div>}
+      {status === 'LOADING' && <div style={{ textAlign: 'center', padding: '40px' }}><p>Fetching Quantum Scenario...</p></div>}
       
       {(status === 'PLAYING' || status === 'ANSWERED' || status === 'NEXT') && (
         <>
@@ -21,23 +48,21 @@ export const GameScreen = ({ state, dispatch }) => {
             {content.map((text, idx) => (
               <div 
                 key={idx} 
-                onClick={() => status === 'PLAYING' && dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: idx } })}
-                style={{ 
-                  flex: 1, 
-                  padding: '2rem', 
-                  border: '1px solid #ccc', 
-                  cursor: status === 'PLAYING' ? 'pointer' : 'default',
-                  opacity: status === 'ANSWERED' && state.correctIndex !== idx ? 0.5 : 1
-                }}
+                onClick={() => handleSelect(idx)}
+                className={`game-card ${status !== 'PLAYING' ? 'disabled' : ''}`}
+                style={{ opacity: status === 'ANSWERED' && correctIndex !== idx ? 0.3 : 1 }}
               >
                 <p>{text}</p>
               </div>
             ))}
           </div>
 
-          <div style={{ marginTop: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '10px' }}>
-              Confidence Slider: {confidence}% (Risk/Reward multiplier)
+          <div style={{ marginTop: '3rem' }}>
+            <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold' }}>
+              Confidence Slider: {confidence}% 
+              <span style={{ fontSize: '0.9em', fontWeight: 'normal', color: 'var(--action-orange)', marginLeft: '10px' }}>
+                (High risk = High reward)
+              </span>
             </label>
             <input 
               type="range" 
@@ -45,18 +70,17 @@ export const GameScreen = ({ state, dispatch }) => {
               value={confidence}
               disabled={status !== 'PLAYING'}
               onChange={(e) => dispatch({ type: 'SET_CONFIDENCE', payload: parseInt(e.target.value) })}
-              style={{ width: '100%' }}
             />
           </div>
 
           {status === 'ANSWERED' && (
-            <div style={{ marginTop: '2rem', padding: '1rem', background: '#eee' }}>
-              <h3>{state.history[state.history.length-1]?.isCorrect ? 'Correct! + Points Addictive Loop' : 'Wrong! Heavy Penalty'}</h3>
+            <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(93, 103, 80, 0.1)', borderRadius: '4px', borderLeft: `4px solid ${state.history[state.history.length-1]?.isCorrect ? 'var(--hover-olive)' : 'var(--action-orange)'}` }}>
+              <h3>{state.history[state.history.length-1]?.isCorrect ? 'Correct! AI detected.' : 'Fooled. That was human.'}</h3>
               
               {state.round >= 5 ? (
-                <button onClick={() => dispatch({ type: 'END_GAME' })}>Finish & View Report</button>
+                <button style={{ marginTop: '10px' }} onClick={() => dispatch({ type: 'END_GAME' })}>Generate Intelligence Report</button>
               ) : (
-                <button onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Round</button>
+                <button style={{ marginTop: '10px' }} onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Scenario</button>
               )}
             </div>
           )}

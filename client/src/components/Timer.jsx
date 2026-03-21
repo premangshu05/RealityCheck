@@ -4,7 +4,6 @@ export const Timer = ({ timeLeft, status, dispatch }) => {
   useEffect(() => {
     if (status !== 'PLAYING') return;
     
-    // Auto fail if timer hits 0
     if (timeLeft <= 0) {
       dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: -1 } }); 
       return;
@@ -17,9 +16,12 @@ export const Timer = ({ timeLeft, status, dispatch }) => {
     return () => clearInterval(timer);
   }, [timeLeft, status, dispatch]);
 
+  const isPressure = timeLeft <= 5;
+
   return (
-    <div>
-      <strong>Timer ◉ {timeLeft}s</strong>
+    <div className={`timer-container ${isPressure ? 'pressure-blur' : ''}`}>
+      <div className="timer-ring"></div>
+      <strong style={{ color: isPressure ? 'var(--action-orange)' : 'inherit' }}>{timeLeft}s remaining</strong>
     </div>
   );
 };
