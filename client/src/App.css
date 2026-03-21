@@ -76,7 +76,8 @@ body.blink-correct { animation: wildGreen 0.6s ease-in-out; }
 .stat-label { display: block; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 2px; }
 
 /* Timer */
-.timer-container { display: flex; align-items: center; gap: 10px; }
+.timer-container { display: flex; align-items: baseline; gap: 8px; justify-content: center; }
+.timer-container .stat-label { margin-bottom: 0; }
 .timer-circle {
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--text-main); animation: pulse 2s infinite alternate;
