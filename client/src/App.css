@@ -30,6 +30,25 @@
   100% { transform: translateY(-10vh) rotate(360deg); }
 }
 
+@keyframes wildRed {
+  0% { box-shadow: inset 0 0 0vw #ff3333; background-color: #000; }
+  25% { box-shadow: inset 0 0 30vw #ff3333; background-color: #330000; }
+  50% { box-shadow: inset 0 0 0vw #ff3333; background-color: #000; }
+  75% { box-shadow: inset 0 0 30vw #ff3333; background-color: #330000; }
+  100% { box-shadow: inset 0 0 0vw #ff3333; background-color: #000; }
+}
+
+@keyframes wildGreen {
+  0% { box-shadow: inset 0 0 0vw #a3e635; background-color: #000; }
+  25% { box-shadow: inset 0 0 30vw #a3e635; background-color: #0d3300; }
+  50% { box-shadow: inset 0 0 0vw #a3e635; background-color: #000; }
+  75% { box-shadow: inset 0 0 30vw #a3e635; background-color: #0d3300; }
+  100% { box-shadow: inset 0 0 0vw #a3e635; background-color: #000; }
+}
+
+body.blink-wrong { animation: wildRed 0.6s ease-in-out; }
+body.blink-correct { animation: wildGreen 0.6s ease-in-out; }
+
 /* Splash and Generic Layouts */
 .splash-content { text-align: center; max-width: 600px; margin: 0 auto; }
 .splash-content h1 { font-size: 4rem; color: var(--accent); margin-bottom: 0.5rem; text-shadow: 0 0 20px var(--accent-dim); }
@@ -47,8 +66,8 @@
   opacity: 0.4;
   border-radius: 20px;
 }
-.level-btn:hover { opacity: 0.8; color: #000; }
-.level-btn.active { opacity: 1; box-shadow: 0 0 20px var(--accent); color: #000; }
+.level-btn:hover { opacity: 0.8; color: #000 !important; }
+.level-btn.active { opacity: 1; box-shadow: 0 0 20px var(--accent); color: #000 !important; }
 
 /* Game/* Other UI */
 .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 1rem;}
@@ -141,17 +160,33 @@
 
 .result-banner.wrong {
   border-color: #ff3333;
-  box-shadow: 0 20px 60px rgba(255, 51, 51, 0.2);
+  box-shadow: 0 20px 60px rgba(255, 51, 51, 0.4);
 }
 
 .result-banner h3 {
   margin-bottom: 20px;
   font-size: 1.5rem;
   color: var(--text-main);
+  transition: all 0.2s;
 }
 
-.result-banner.correct h3 { color: var(--accent); }
-.result-banner.wrong h3 { color: #ff3333; }
+.result-banner.correct h3 { 
+  color: #a3e635; /* Limish */
+  font-family: 'Space Grotesk', monospace;
+  letter-spacing: 3px;
+  font-size: 1.8rem;
+}
+
+.result-banner.wrong h3 { 
+  color: #ff3333; 
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 5px;
+  font-size: 2.2rem;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0px #330000;
+}
 
 @keyframes slideUp {
   0% { transform: translate(-50%, 40%); opacity: 0; }

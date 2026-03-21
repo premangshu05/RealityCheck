@@ -15,8 +15,18 @@ export const GameScreen = ({ state, dispatch }) => {
 
   const handleSelect = (idx) => {
     if (status !== 'PLAYING') return;
-    if (idx === correctIndex) playSound('correct');
-    else playSound('wrong');
+    
+    const isCorrect = idx === correctIndex;
+    if (isCorrect) {
+      playSound('correct');
+      document.body.classList.add('blink-correct');
+      setTimeout(() => document.body.classList.remove('blink-correct'), 600);
+    } else {
+      playSound('wrong');
+      document.body.classList.add('blink-wrong');
+      setTimeout(() => document.body.classList.remove('blink-wrong'), 600);
+    }
+    
     dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: idx } });
   };
 
