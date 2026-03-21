@@ -8,7 +8,7 @@ import './App.css';
 
 const FloatingEmojis = () => {
     // Generate deterministic array for fun black background
-    const emojis = Array.from({ length: 25 }).map((_, i) => ({
+    const emojis = React.useMemo(() => Array.from({ length: 25 }).map((_, i) => ({
         id: i,
         icon: i % 2 === 0 ? '🤖' : '🧑‍💻',
         left: `${(i * 4) + (Math.random()*2)}vw`,
@@ -16,7 +16,7 @@ const FloatingEmojis = () => {
         animationDelay: `-${Math.random() * 25}s`,
         fontSize: `${2 + Math.random() * 2}rem`,
         opacity: 0.05 + (Math.random() * 0.1)
-    }));
+    })), []);
     return (
         <div className="bg-animation">
             {emojis.map(e => (
