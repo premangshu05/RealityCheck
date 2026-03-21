@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Timer } from '../components/Timer';
 import { playSound } from '../engine/soundEngine';
 
@@ -6,81 +6,89 @@ export const GameScreen = ({ state, dispatch }) => {
   const { status, round, score, timeLeft, content, confidence, correctIndex } = state;
 
   useEffect(() => {
-    if (status === 'LOADING') {
-      playSound('paper'); // or when playing
-    }
+    if (status === 'LOADING') playSound('paper');
   }, [status]);
 
   useEffect(() => {
-    if (status === 'PLAYING' && timeLeft <= 5 && timeLeft > 0) {
-      playSound('heartbeat');
-    }
+    if (status === 'PLAYING' && timeLeft <= 5 && timeLeft > 0) playSound('heartbeat');
   }, [timeLeft, status]);
 
   const handleSelect = (idx) => {
     if (status !== 'PLAYING') return;
-    
-    if (idx === correctIndex) {
-        playSound('correct');
-    } else {
-        playSound('wrong');
-    }
-
+    if (idx === correctIndex) playSound('correct');
+    else playSound('wrong');
     dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: idx } });
   };
 
-  const isPressure = timeLeft <= 5 && status === 'PLAYING';
+  const isAnswered = status === 'ANSWERED';
+  const lastHistory = state.history[state.history.length-1];
 
   return (
-    <div className={status === 'PLAYING' ? 'paper-flip-enter' : ''}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '1.2rem' }}>
-        <strong>Round {round}</strong>
-        <strong className={isPressure ? 'pressure-blur' : ''} style={{ fontSize: '1.4rem' }}>Score {score}</strong>
+    <div style={{ animation: status === 'PLAYING' ? 'fadeIn 0.5s ease-out' : 'none' }}>
+      
+      <div className="game-header">
+        <div className="stat-group">
+          <span className="stat-label">Phase</span>
+          <span className="stat-val">0{round}</span>
+        </div>
+        
+        {(status === 'PLAYING' || isAnswered || status === 'NEXT') && (
+          <Timer timeLeft={timeLeft} status={status} dispatch={dispatch} />
+        )}
+
+        <div className="stat-group" style={{ alignItems: 'flex-end' }}>
+          <span className="stat-label">Score</span>
+          <span className="stat-val" style={{color: 'var(--accent-blue)'}}>{score}</span>
+        </div>
       </div>
       
-      {status === 'LOADING' && <div style={{ textAlign: 'center', padding: '40px' }}><p>Fetching Quantum Scenario...</p></div>}
+      {status === 'LOADING' && (
+        <div className="glass-panel splash-content" style={{ marginTop: '2rem' }}>
+          <h2>Intercepting Transmissions...</h2>
+        </div>
+      )}
       
-      {(status === 'PLAYING' || status === 'ANSWERED' || status === 'NEXT') && (
+      {(status === 'PLAYING' || isAnswered || status === 'NEXT') && (
         <>
-          <Timer timeLeft={timeLeft} status={status} dispatch={dispatch} />
+          <div className="cards-grid">
+            {content.map((text, idx) => {
+              let classes = 'game-card';
+              if (status !== 'PLAYING') classes += ' disabled';
+              if (isAnswered && correctIndex === idx) classes += ' selected-correct';
+              if (isAnswered && lastHistory && !lastHistory.isCorrect && lastHistory.selectedIndex === idx) classes += ' selected-wrong';
+              // Actually lastHistory doesn't store selectedIndex natively, we can use a workaround:
+              // if it's not correctIndex and the user got it wrong, it means they clicked the OTHER one.
+              if (isAnswered && correctIndex !== idx && lastHistory && !lastHistory.isCorrect) classes += ' selected-wrong';
 
-          <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
-            {content.map((text, idx) => (
-              <div 
-                key={idx} 
-                onClick={() => handleSelect(idx)}
-                className={`game-card ${status !== 'PLAYING' ? 'disabled' : ''}`}
-                style={{ opacity: status === 'ANSWERED' && correctIndex !== idx ? 0.3 : 1 }}
-              >
-                <p>{text}</p>
-              </div>
-            ))}
+              return (
+                <div key={idx} onClick={() => handleSelect(idx)} className={classes}>
+                  {text}
+                </div>
+              );
+            })}
           </div>
 
-          <div style={{ marginTop: '3rem' }}>
-            <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold' }}>
-              Confidence Slider: {confidence}% 
-              <span style={{ fontSize: '0.9em', fontWeight: 'normal', color: 'var(--action-orange)', marginLeft: '10px' }}>
-                (High risk = High reward)
-              </span>
-            </label>
+          <div className="confidence-module">
+            <div className="confidence-header">
+              <span>Confidence Overlay</span>
+              <span className="stat-val">{confidence}%</span>
+            </div>
             <input 
-              type="range" 
-              min="0" max="100" 
+              type="range" min="0" max="100" 
               value={confidence}
               disabled={status !== 'PLAYING'}
               onChange={(e) => dispatch({ type: 'SET_CONFIDENCE', payload: parseInt(e.target.value) })}
             />
           </div>
 
-          {status === 'ANSWERED' && (
-            <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(93, 103, 80, 0.1)', borderRadius: '4px', borderLeft: `4px solid ${state.history[state.history.length-1]?.isCorrect ? 'var(--hover-olive)' : 'var(--action-orange)'}` }}>
-              <h3>{state.history[state.history.length-1]?.isCorrect ? 'Correct! AI detected.' : 'Fooled. That was human.'}</h3>
+          {isAnswered && (
+            <div className={`round-result ${lastHistory?.isCorrect ? 'correct' : 'wrong'}`}>
+              <h3>{lastHistory?.isCorrect ? 'SYNTHETIC DETECTION CONFIRMED' : 'HUMAN FALSE POSITIVE'}</h3>
               
               {state.round >= 5 ? (
-                <button style={{ marginTop: '10px' }} onClick={() => dispatch({ type: 'END_GAME' })}>Generate Intelligence Report</button>
+                <button className="primary" onClick={() => dispatch({ type: 'END_GAME' })}>Compile Report</button>
               ) : (
-                <button style={{ marginTop: '10px' }} onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Next Scenario</button>
+                <button className="primary" onClick={() => dispatch({ type: 'NEXT_ROUND' })}>Proceed to Next Phase</button>
               )}
             </div>
           )}

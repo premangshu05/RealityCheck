@@ -15,9 +15,13 @@ import { calculateRoundScore } from './scoringSystem';
 
 export const gameReducer = (state, action) => {
   switch (action.type) {
+    case 'SET_LEVEL':
+      if (state.status !== 'IDLE') return state;
+      return { ...state, level: action.payload };
+
     case 'START_GAME':
       if (state.status !== 'IDLE' && state.status !== 'FINISHED') return state;
-      return { ...initialState, status: 'LOADING' };
+      return { ...initialState, status: 'LOADING', level: state.level };
 
     case 'ROUND_LOADING':
       if (state.status !== 'LOADING' && state.status !== 'ANSWERED') return state;
