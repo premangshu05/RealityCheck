@@ -37,8 +37,15 @@
 
 .difficulty-selector { display: flex; flex-direction: column; gap: 15px; margin-bottom: 3rem; text-align: left; }
 .level-buttons { display: flex; gap: 10px; justify-content: center; }
-.level-btn { flex: 1; padding: 15px 0; }
-.level-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.level-btn {
+  flex: 1;
+  padding: 15px 0;
+  background: rgba(0, 255, 204, 0.05);
+  border: 1px solid rgba(0, 255, 204, 0.4);
+  color: var(--accent);
+}
+.level-btn:hover { background: rgba(0, 255, 204, 0.1); border-color: var(--accent); }
+.level-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
 
 /* Game/* Other UI */
 .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 1rem;}
@@ -67,8 +74,8 @@
 }
 
 .game-card {
-  background: var(--card-bg);
-  border: 2px solid var(--card-border);
+  background: rgba(0, 255, 204, 0.03);
+  border: 1px solid rgba(0, 255, 204, 0.4);
   border-radius: 8px;
   padding: 1.5rem;
   font-size: 1.05rem;
@@ -80,9 +87,11 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  color: #fff;
 }
 
 .game-card:hover:not(.disabled) {
+  background: rgba(0, 255, 204, 0.08);
   border-color: var(--accent);
   transform: translateY(-4px);
   box-shadow: 0 10px 30px var(--accent-dim);
