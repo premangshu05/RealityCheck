@@ -40,12 +40,14 @@
 .level-btn {
   flex: 1;
   padding: 15px 0;
-  background: rgba(255, 106, 0, 0.05);
-  border: 1px solid rgba(255, 106, 0, 0.4);
-  color: var(--accent);
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  color: #000;
+  font-weight: 700;
+  opacity: 0.4;
 }
-.level-btn:hover { background: rgba(255, 106, 0, 0.1); border-color: var(--accent); }
-.level-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+.level-btn:hover { opacity: 0.7; }
+.level-btn.active { opacity: 1; box-shadow: 0 0 20px var(--accent); }
 
 /* Game/* Other UI */
 .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 1rem;}
@@ -74,11 +76,12 @@
 }
 
 .game-card {
-  background: rgba(255, 106, 0, 0.03);
-  border: 1px solid rgba(255, 106, 0, 0.4);
+  background: var(--accent);
+  border: 2px solid var(--accent);
   border-radius: 8px;
   padding: 1.5rem;
   font-size: 1.05rem;
+  font-weight: 600;
   line-height: 1.6;
   cursor: pointer;
   transition: all 0.2s;
@@ -87,28 +90,31 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #fff;
+  color: #000;
 }
 
 .game-card:hover:not(.disabled) {
-  background: rgba(255, 106, 0, 0.08);
-  border-color: var(--accent);
   transform: translateY(-4px);
   box-shadow: 0 10px 30px var(--accent-dim);
+  filter: brightness(1.2);
 }
 
 .game-card.disabled { opacity: 0.3; cursor: default; }
 
 .game-card.selected-correct {
-  border-color: var(--accent);
-  background: var(--accent-dim);
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000;
   opacity: 1;
+  box-shadow: 0 0 30px #ffffff;
 }
 
 .game-card.selected-wrong {
   border-color: #ff3333;
-  background: rgba(255, 51, 51, 0.1);
+  background: #ff3333;
+  color: #ffffff;
   opacity: 1;
+  box-shadow: 0 0 30px rgba(255, 51, 51, 0.4);
 }
 
 /* Result Overlay Absolute (prevents scrolling) */
