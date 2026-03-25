@@ -39,6 +39,8 @@ export const GameScreen = ({ state, dispatch }) => {
 
   const ResultBanner = () => {
     const isWin = lastHistory?.isCorrect;
+    const isFinalRound = round >= 5;
+
     return (
       <div className={`result-banner ${isWin ? 'result-banner--correct' : 'result-banner--wrong'}`}>
         <div className="banner-status">{isWin ? 'DECRYPTED' : 'SIGNAL LOST'}</div>
@@ -46,9 +48,9 @@ export const GameScreen = ({ state, dispatch }) => {
         <button 
           className="primary" 
           style={{marginTop: '2rem', width: '100%'}}
-          onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+          onClick={() => dispatch({ type: isFinalRound ? 'END_GAME' : 'NEXT_ROUND' })}
         >
-          PROCEED TO NEXT PHASE
+          {isFinalRound ? 'COMPILE FINAL REPORT' : 'PROCEED TO NEXT PHASE'}
         </button>
       </div>
     );
