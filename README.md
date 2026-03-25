@@ -17,7 +17,7 @@ It evaluates confidence, reaction time, and risk appetite, dynamically tracking 
 
 ## 🛠️ Local Development
 
-This project uses a monorepo setup containing both `client` and `server` folders.
+This project uses a monorepo setup containing both `frontend` and `backend` services.
 
 ### 1. Start the Node Server 
 Provides local API endpoints (`GET /round`) and parses randomizing datasets.

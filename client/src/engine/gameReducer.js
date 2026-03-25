@@ -8,7 +8,9 @@ export const initialState = {
   correctIndex: null,
   confidence: 50,
   status: "IDLE", // IDLE → LOADING → PLAYING → ANSWERED → NEXT → FINISHED
-  history: []
+  history: [],
+  user: null,
+  isAuthenticated: false
 };
 
 import { calculateRoundScore } from './scoringSystem';
@@ -17,6 +19,9 @@ export const gameReducer = (state, action) => {
   switch (action.type) {
     case 'GO_TO_START':
       return { ...initialState, status: 'IDLE' };
+
+    case 'LOGIN':
+      return { ...state, user: action.payload, isAuthenticated: true };
 
     case 'SET_LEVEL':
       if (state.status !== 'IDLE') return state;
