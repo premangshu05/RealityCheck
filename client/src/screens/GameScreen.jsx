@@ -13,25 +13,46 @@ export const GameScreen = ({ state, dispatch }) => {
     if (status === 'PLAYING' && timeLeft <= 5 && timeLeft > 0) playSound('heartbeat');
   }, [timeLeft, status]);
 
+  const lastHistory = state.history[state.history.length-1];
+  const isAnswered = status === 'ANSWERED';
+
   const handleSelect = (idx) => {
     if (status !== 'PLAYING') return;
-    
     const isCorrect = idx === correctIndex;
+    const overlay = document.getElementById('feedback-overlay');
     if (isCorrect) {
       playSound('correct');
-      document.body.classList.add('blink-correct');
-      setTimeout(() => document.body.classList.remove('blink-correct'), 600);
+      overlay.classList.add('blink-correct');
+      setTimeout(() => overlay.classList.remove('blink-correct'), 600);
     } else {
       playSound('wrong');
-      document.body.classList.add('blink-wrong');
-      setTimeout(() => document.body.classList.remove('blink-wrong'), 600);
+      overlay.classList.add('blink-wrong');
+      const container = document.querySelector('.app-container');
+      container.classList.add('shake');
+      setTimeout(() => {
+        overlay.classList.remove('blink-wrong');
+        container.classList.remove('shake');
+      }, 600);
     }
-    
     dispatch({ type: 'SELECT_ANSWER', payload: { selectedIndex: idx } });
   };
 
-  const isAnswered = status === 'ANSWERED';
-  const lastHistory = state.history[state.history.length-1];
+  const ResultBanner = () => {
+    const isWin = lastHistory?.isCorrect;
+    return (
+      <div className={`result-banner ${isWin ? 'result-banner--correct' : 'result-banner--wrong'}`}>
+        <div className="banner-status">{isWin ? 'DECRYPTED' : 'SIGNAL LOST'}</div>
+        <h2>{isWin ? 'CORRECT. HUMAN DETECTED.' : 'WRONG. THAT WAS AN AI.'}</h2>
+        <button 
+          className="primary" 
+          style={{marginTop: '2rem', width: '100%'}}
+          onClick={() => dispatch({ type: 'NEXT_ROUND' })}
+        >
+          PROCEED TO NEXT PHASE
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div style={{ animation: status === 'PLAYING' ? 'fadeIn 0.5s ease-out' : 'none' }}>
@@ -88,17 +109,7 @@ export const GameScreen = ({ state, dispatch }) => {
             />
           </div>
 
-          {isAnswered && (
-            <div className={`result-banner ${lastHistory?.isCorrect ? 'correct' : 'wrong'}`}>
-              <h3>{lastHistory?.isCorrect ? 'HUMAN DETECTED successfully.' : 'WRONG. THAT WAS AN AI.'}</h3>
-              
-              {state.round >= 5 ? (
-                <button className="primary" onClick={() => dispatch({ type: 'END_GAME' })}>COMPILE REPORT</button>
-              ) : (
-                <button className="primary" onClick={() => dispatch({ type: 'NEXT_ROUND' })}>PROCEED TO NEXT PHASE</button>
-              )}
-            </div>
-          )}
+          {isAnswered && <ResultBanner />}
         </>
       )}
     </div>

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 export const useRoundLoader = (state, dispatch) => {
   useEffect(() => {
     if (state.status === 'LOADING') {
-      fetch(`http://localhost:3001/round?level=${state.level}`)
+      fetch(`/round?level=${state.level}`)
         .then(res => res.json())
         .then(data => {
           setTimeout(() => {

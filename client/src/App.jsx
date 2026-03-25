@@ -41,8 +41,9 @@ function App() {
 
   return (
     <>
+      <div className="feedback-overlay" id="feedback-overlay"></div>
       <FloatingEmojis />
-      <div className="app-container">
+      <div className="app-container" data-round={state.round} data-status={state.status}>
         {state.status === 'IDLE' && <StartScreen dispatch={dispatch} state={state} />}
         
         {(state.status === 'LOADING' || state.status === 'PLAYING' || state.status === 'ANSWERED' || state.status === 'NEXT') && (

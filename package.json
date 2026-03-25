@@ -1,0 +1,13 @@
+{
+  "name": "realitycheck",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "build": "cd client && npm run build",
+    "start": "cd server && node index.js",
+    "deploy": "npm run install-all && npm run build && npm run start"
+  }
+}
