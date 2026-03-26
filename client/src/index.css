@@ -3,8 +3,8 @@
 
 :root {
   --bg: #000000;
-  --accent: #ff6b6b;
-  --accent-dim: rgba(255, 107, 107, 0.4);
+  --accent: #00ffaa;
+  --accent-dim: rgba(0, 255, 170, 0.4);
   --text-main: #ffffff;
   --text-muted: #888888;
   --card-bg: #0a0a0a;

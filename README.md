@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="client/public/logo.png" width="200" alt="RealityCheck Logo">
+  <img src="client/public/favicon.svg" width="200" alt="RealityCheck Logo">
 </p>
 
 # RealityCheck: Interactive AI-Awareness Game 🧠
