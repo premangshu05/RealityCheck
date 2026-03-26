@@ -10,7 +10,6 @@ export const StartScreen = ({ dispatch, state }) => {
 
   return (
     <div className="glass-panel splash-content">
-      <img src="/favicon.svg" alt="RealityCheck Logo" className="app-logo" style={{ width: '120px', marginBottom: '20px' }} />
       <h1>RealityCheck</h1>
       <h2>Simulate human detection parameters.</h2>
       
