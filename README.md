@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="client/public/logo.png" width="200" alt="RealityCheck Logo">
+</p>
+
 # RealityCheck: Interactive AI-Awareness Game 🧠
 
 **RealityCheck** is a fast-paced psychological web game testing the player's ability to distinguish between human-written texts and contextually manipulated AI-generated content under strict time constraints. 
